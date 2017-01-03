@@ -643,7 +643,7 @@ dashboardPage(
                     column(
                         width = 7,
                         fluidRow(
-                            box
+                            box(
                                 title = tagList(
                                     icon("codepen"),
                                     "3D Scatter Plot"

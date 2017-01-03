@@ -10,12 +10,6 @@ dashboardPage(
         hr(),
         sidebarMenu(
             menuItem(
-                "Overview",
-                icon = icon("file-text-o"),
-                tabName = "overview",
-                selected = TRUE
-            ),
-            menuItem(
                 "All Customers",
                 icon = icon("square"),
                 menuSubItem(
@@ -29,12 +23,12 @@ dashboardPage(
                     icon = icon("codepen")
                 ),
                 menuSubItem(
-                    "Therapy Areas",
+                    "Product Classes",
                     tabName = "all_ta",
-                    icon = icon("heartbeat")
+                    icon = icon("bullseye")
                 ),
                 menuSubItem(
-                    "Exclusivity",
+                    "Competition",
                     tabName = "all_exclusivity",
                     icon = icon("money")
                 )
@@ -50,7 +44,8 @@ dashboardPage(
                 menuSubItem(
                     "3D Scatter Plot",
                     tabName = "small_cluster",
-                    icon = icon("codepen")
+                    icon = icon("codepen"),
+                    selected = TRUE
                 )
             ),
             menuItem(
@@ -61,6 +56,11 @@ dashboardPage(
                     tabName = "product_cluster",
                     icon = icon("codepen")
                 )
+            ),
+            menuItem(
+                "Readme",
+                icon = icon("file-text-o"),
+                tabName = "overview"
             ),
             hr(),
             numericInput(
@@ -90,16 +90,16 @@ dashboardPage(
                                   "processes, but it also includes tools to",
                                   "examine purchasing patterns of customers",
                                   "based on the types of products they buy",
-                                  "(Therapy Area) and the",
+                                  "(Product Class) and the",
                                   "organization\'s market position in terms",
-                                  "of exclusivity."),
+                                  "of competition."),
                                 strong("Context"),
-                                p("In this scenarion, the organization has",
+                                p("In this scenario, the organization has",
                                   "several dozen customers, each buying",
                                   "some assortment of their hundreds of",
                                   "products.",
-                                  "The products each belong to one of 12 therapy",
-                                  "areas.  Product pricing is primarily driven",
+                                  "The products each belong to one of 12 classes",
+                                  "Product pricing is primarily driven",
                                   "by customer size in terms of a discount off",
                                   "of the list price and rebates based on",
                                   "their throughput.  Since the top 7 customers",
@@ -109,7 +109,7 @@ dashboardPage(
                                   "customers to streamline pricing processes."),
                                 p("Also of interest is a tool to allow the",
                                   "organization to compare customers in terms",
-                                  "of the Therapy Areas and Exclusivity of",
+                                  "of the Classes and Exclusivity of",
                                   "the products they buy, potentially",
                                   "identifying areas of risk and opportunity",
                                   "for each of the customers."),
@@ -118,8 +118,8 @@ dashboardPage(
                                   "primarily defined in terms of:"),
                                 p("- Median Price (% of List Price)"),
                                 p("- Median Rebate %"),
-                                p("- % of Doses"),
-                                p("- % of Gross Margin (GM)")
+                                p("- % of Volume"),
+                                p("- % of Revenue")
                             )
                         ),
                         column(
@@ -141,8 +141,8 @@ dashboardPage(
                                   "(with the Top 7 grouped separately),",
                                   "along with a summary table of the groups"),
                                 p("- Sections for comparing customers to ",
-                                  "eachother and the organizations overall",
-                                  "distribution of Therapy Areas and",
+                                  "each other and the organizations overall",
+                                  "distribution of Product Classes and",
                                   "Excusivity.  These sections include a ",
                                   "visuals of the organizations aggregate",
                                   "distribution, heatmaps of the customers",
@@ -240,7 +240,7 @@ dashboardPage(
                                 dataTableOutput("all.sum.dt"),
                                 hr(),
                                 "Rebate and price as percent of list price, summarized as median for the group.",
-                                "%Doses and %GM measured represent group total as % of Corp Total.",
+                                "%Volume and %Revenue measured represent group total as % of Corp Total.",
                                 "Doses and GM columns measure group totals in millions"
                             )
                         ) ## close boxplot tabBox
@@ -282,12 +282,12 @@ dashboardPage(
                                                             height = "600px")
                                         ),
                                         tabPanel(
-                                            "GM",
+                                            "Revenue",
                                             d3heatmapOutput("all.ta.gm.hm",
                                                             height = "600px")
                                         ),
                                         tabPanel(
-                                            "Product Families",
+                                            "Products",
                                             d3heatmapOutput("all.ta.prod.hm",
                                                             height = "600px")
                                         )
@@ -337,7 +337,7 @@ dashboardPage(
                                     tabBox(
                                         width = NULL,
                                         tabPanel(
-                                            "Selected Customer(s) Therapy Area Summary",
+                                            "Selected Customer(s) Product Class Summary",
                                             dataTableOutput("cust.compare.ta.summary.dt")
                                         ),
                                         tabPanel(
@@ -464,184 +464,186 @@ dashboardPage(
                 ), ## close small cust heatmap tab
                 tabItem(
                     tabName = "small_cluster",
-                    ## col for plot & centriods
-                    column(
-                        width = 7,
-                        fluidRow(
-                            box(
-                                title = tagList(
-                                    icon("codepen"),
-                                    "3D Scatter Plot"
-                                ),
-                                width = NULL,
-                                plotlyOutput("small.scatter", height = "600px")
-                            )
-                        )
-                    ), ## close plot & col
-                    ## col 2
-                    column(
-                        width = 5,
-                        box(
-                            title = tagList(
-                                icon("gear"),
-                                "Plot Options"
-                            ),
-                            width = NULL,
+                    fluidRow(
+                        ## col for plot & centriods
+                        column(
+                            width = 7,
                             fluidRow(
-                                column(
-                                    width = 4,
-                                    selectInput(
-                                        "x",
-                                        label = "X Variable",
-                                        choices = xyz.choices,
-                                        selected = "Net.WAC.Percent",
-                                        width = NULL
-                                    )
-                                ),
-                                column(
-                                    width = 4,
-                                    selectInput(
-                                        "y",
-                                        label = "Y Variable",
-                                        choices = xyz.choices,
-                                        selected = "Percent.GM",
-                                        width = NULL
-                                    )
-                                ),
-                                column(
-                                    width = 4,
-                                    selectInput(
-                                        "z",
-                                        label = "Z Variable",
-                                        choices = xyz.choices,
-                                        selected = "Rebates",
-                                        width = NULL
-                                    )
+                                box(
+                                    title = tagList(
+                                        icon("codepen"),
+                                        "3D Scatter Plot"
+                                    ),
+                                    width = NULL,
+                                    plotlyOutput("small.scatter", height = "600px")
                                 )
                             )
-                        ), ## end var select box
-                        tabBox(
-                            "Cluster Values",
-                            id = "small_sidebar",
-                            width = NULL,
-                            side = "right",
-                            tabPanel(
-                                "Boxplots",
-                                tabBox(
-                                    width = NULL,
-                                    id = "small_boxplots",
-                                    tabPanel(
-                                        "List %",
-                                        plotlyOutput("small.netwac.box",
-                                                     height = "352px")
-                                    ),
-                                    tabPanel(
-                                        "Rebate %",
-                                        plotlyOutput("small.rebate.box",
-                                                     height = "352px")
-                                    ),
-                                    tabPanel(
-                                        "% Doses",
-                                        plotlyOutput("small.dose.box",
-                                                     height = "352px")
-                                    ),
-                                    tabPanel(
-                                        "% GM",
-                                        plotlyOutput("small.gm.box",
-                                                     height = "352px")
-                                    )
-                                ) ## close boxplot tabBox
-                            ), ## close boxplot tab panel
-                            tabPanel(
-                                "Group Summaries",
-                                selectizeInput(
-                                    "small.sum.selection",
-                                    "Filter Groups",
-                                    choices = 1:6,
-                                    selected = NULL,
-                                    multiple = TRUE,
-                                    options = list(
-                                        plugins = list(
-                                            "remove_button",
-                                            "restore_on_backspace"
-                                        )
-                                    )
+                        ), ## close plot & col
+                        ## col 2
+                        column(
+                            width = 5,
+                            box(
+                                title = tagList(
+                                    icon("gear"),
+                                    "Plot Options"
                                 ),
-                                dataTableOutput("selected.summary.dt"),
-                                "GM and Doses measured in millions.  List % is median net price as",
-                                " percent of list price. List % and Rebate % are median each group",
-                                " member's median values.  GM, Doses, and their % of total represent",
-                                "sum of group members. Size is number of members in group."
-                            ),
-                            tabPanel(
-                                "Customer/Product Info",
+                                width = NULL,
                                 fluidRow(
                                     column(
-                                        width = 6,
-                                        selectizeInput(
-                                            "cust.prod.select",
-                                            "Search for or Click Customer(s)",
-                                            choices = customer.vec,
-                                            selected = NULL,
-                                            multiple = TRUE,
-                                            options = list(
-                                                plugins = list(
-                                                    "remove_button",
-                                                    "restore_on_backspace"
-                                                )
-                                            )
+                                        width = 4,
+                                        selectInput(
+                                            "x",
+                                            label = "X Variable",
+                                            choices = xyz.choices,
+                                            selected = "Net.WAC.Percent",
+                                            width = NULL
                                         )
                                     ),
                                     column(
-                                        width = 6,
-                                        selectizeInput(
-                                            "group.prod.select",
-                                            "Or select group(s)",
-                                            choices = 1:6,
-                                            selected = NULL,
-                                            multiple = TRUE,
-                                            options = list(
-                                                plugins = list(
-                                                    "remove_button",
-                                                    "restore_on_backspace"
+                                        width = 4,
+                                        selectInput(
+                                            "y",
+                                            label = "Y Variable",
+                                            choices = xyz.choices,
+                                            selected = "Percent.GM",
+                                            width = NULL
+                                        )
+                                    ),
+                                    column(
+                                        width = 4,
+                                        selectInput(
+                                            "z",
+                                            label = "Z Variable",
+                                            choices = xyz.choices,
+                                            selected = "Rebates",
+                                            width = NULL
+                                        )
+                                    )
+                                )
+                            ), ## end var select box
+                            tabBox(
+                                "Cluster Values",
+                                id = "small_sidebar",
+                                width = NULL,
+                                side = "right",
+                                tabPanel(
+                                    "Boxplots",
+                                    tabBox(
+                                        width = NULL,
+                                        id = "small_boxplots",
+                                        tabPanel(
+                                            "List %",
+                                            plotlyOutput("small.netwac.box",
+                                                         height = "352px")
+                                        ),
+                                        tabPanel(
+                                            "Rebate %",
+                                            plotlyOutput("small.rebate.box",
+                                                         height = "352px")
+                                        ),
+                                        tabPanel(
+                                            "% Volume",
+                                            plotlyOutput("small.dose.box",
+                                                         height = "352px")
+                                        ),
+                                        tabPanel(
+                                            "% Revenue",
+                                            plotlyOutput("small.gm.box",
+                                                         height = "352px")
+                                        )
+                                    ) ## close boxplot tabBox
+                                ), ## close boxplot tab panel
+                                tabPanel(
+                                    "Group Summaries",
+                                    selectizeInput(
+                                        "small.sum.selection",
+                                        "Filter Groups",
+                                        choices = 1:6,
+                                        selected = NULL,
+                                        multiple = TRUE,
+                                        options = list(
+                                            plugins = list(
+                                                "remove_button",
+                                                "restore_on_backspace"
+                                            )
+                                        )
+                                    ),
+                                    dataTableOutput("selected.summary.dt"),
+                                    "Revenue and Volume measured in millions.  List % is median net price as",
+                                    " percent of list price. List % and Rebate % are median each group",
+                                    " member's median values, all others are",
+                                    "sums."
+                                ),
+                                tabPanel(
+                                    "Customer/Product Info",
+                                    fluidRow(
+                                        column(
+                                            width = 6,
+                                            selectizeInput(
+                                                "cust.prod.select",
+                                                "Search for/Click Customer(s)",
+                                                choices = customer.vec,
+                                                selected = NULL,
+                                                multiple = TRUE,
+                                                options = list(
+                                                    plugins = list(
+                                                        "remove_button",
+                                                        "restore_on_backspace"
+                                                    )
+                                                )
+                                            )
+                                        ),
+                                        column(
+                                            width = 6,
+                                            selectizeInput(
+                                                "group.prod.select",
+                                                "Or select group(s)",
+                                                choices = 1:6,
+                                                selected = NULL,
+                                                multiple = TRUE,
+                                                options = list(
+                                                    plugins = list(
+                                                        "remove_button",
+                                                        "restore_on_backspace"
+                                                    )
                                                 )
                                             )
                                         )
-                                    )
-                                ),
-                                tabBox(
-                                    width = NULL,
-                                    tabPanel(
-                                        "Overview",
-                                        dataTableOutput("cust.select.sum.dt")
                                     ),
-                                    tabPanel(
-                                        "Top Products",
-                                        dataTableOutput("selected.prod.dt")
+                                    tabBox(
+                                        width = NULL,
+                                        tabPanel(
+                                            "Overview",
+                                            dataTableOutput("cust.select.sum.dt")
+                                        ),
+                                        tabPanel(
+                                            "Top Products",
+                                            dataTableOutput("selected.prod.dt")
+                                        ),
+                                        tabPanel(
+                                            "Classes",
+                                            dataTableOutput("selected.ta.dt")
+                                        ),
+                                        tabPanel(
+                                            "Exclusivity",
+                                            dataTableOutput("selected.excl.dt")
+                                        )
                                     ),
-                                    tabPanel(
-                                        "Therapies",
-                                        dataTableOutput("selected.ta.dt")
-                                    ),
-                                    tabPanel(
-                                        "Exclusivity",
-                                        dataTableOutput("selected.excl.dt")
-                                    )
-                                ),
-                                "Products aggregated within the seleced ",
-                                "customer(s) or group(s).",
-                                "GM and Doses measured in millions.",
-                                " Price measured as net price as % of list price."
-                            )
-                        ) ## close col2 tabBox
-                    ) ## close col 2
+                                    "Products aggregated within the seleced ",
+                                    "customer(s) or group(s).",
+                                    "Rev. and Vol. measured in millions.",
+                                    " Price measured as net price as % of list price."
+                                )
+                            ) ## close col2 tabBox
+                        ) ## close col 2
+                    ) ## close row
                 ), ## close small cust cluster tab
                 tabItem(
                     tabName = "product_cluster",
                     column(
                         width = 7,
                         fluidRow(
-                            box(
+                            box
                                 title = tagList(
                                     icon("codepen"),
                                     "3D Scatter Plot"
