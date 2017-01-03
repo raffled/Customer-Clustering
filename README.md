@@ -26,7 +26,7 @@ Also of interest is a tool to allow the organization to compare customers in
 terms of the Classes and Exclusivity of the products they buy, potentially
 identifying areas of risk and opportunity for each of the customers.
 
-## Components/Tools",
+## Components/Tools
 ### All Customers
 The All Customers section provides a high-level overview of all of the
 organizations customers, including:
