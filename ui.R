@@ -130,7 +130,7 @@ dashboardPage(
                                 strong("All Customers"),
                                 p("The All Customers section provides a",
                                   "high-level overview of all of the",
-                                  "organizations customers, including:"),
+                                  "organization's customers, including:"),
                                 p("- A heatmap of all customers, allowing for",
                                   "a quick identification of customer grouping",
                                   "using Hierarchical Clustering on the main",
